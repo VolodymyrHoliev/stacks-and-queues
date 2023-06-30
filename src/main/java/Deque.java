@@ -10,6 +10,39 @@ public class Deque<Item> implements Iterable<Item> {
 
 	}
 
+	private class Node<T> {
+		private Item item;
+
+		private Node<Item> next;
+
+		private Node<Item> previous;
+
+		Item getItem() {
+			return this.item;
+		}
+
+		Node<Item> getNext() {
+			return this.next;
+		}
+
+		Node<Item> getPrevious() {
+			return this.previous;
+		}
+
+		void setPrevious(Node<Item> previous) {
+			this.previous = previous;
+		}
+
+		void setItem(Item item) {
+			this.item = item;
+		}
+
+		void setNext(Node<Item> next) {
+			this.next = next;
+		}
+
+	}
+
 	private class DequeIterator implements Iterator<Item> {
 		private Node<Item> nextNode = first;
 
@@ -66,7 +99,7 @@ public class Deque<Item> implements Iterable<Item> {
 
 			first.setPrevious(newFirst);
 
-			first = newFirst; 
+			first = newFirst;
 		}
 
 	}
@@ -130,26 +163,26 @@ public class Deque<Item> implements Iterable<Item> {
 
 	public static void main(String[] args) {
 		Deque<String> deque = new Deque<>();
-		
+
 		deque.addFirst("A");
-		
+
 		deque.addLast("B");
-		
+
 		deque.addFirst("C");
-		
+
 		deque.addLast("D");
-		
+
 		deque.removeFirst();
-		
+
 		deque.removeLast();
-		
+
 		Iterator<String> iterator = deque.iterator();
-		
-		while(iterator.hasNext()) {
+
+		while (iterator.hasNext()) {
 			String next = iterator.next();
-			
+
 			System.out.println(next);
-			
+
 		}
 	}
 
