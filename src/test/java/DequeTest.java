@@ -8,207 +8,244 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DequeTest {
-	private Deque<String> subject;
+    private Deque<String> subject;
 
-	private DequeFieldExtractor fieldExtractor = new DequeFieldExtractor();
+    private DequeFieldExtractor fieldExtractor = new DequeFieldExtractor();
 
-	@Before
-	public void init() {
-		subject = new Deque<String>();
-	}
+    @Before
+    public void init() {
+        subject = new Deque<String>();
+    }
 
-	@Test
-	public void addFirst_Null_ThrowsIAE() {
-		assertThrows(IllegalArgumentException.class, () -> subject.addFirst(null));
-	}
+    @Test
+    public void addFirst_Null_ThrowsIAE() {
+        assertThrows(IllegalArgumentException.class, () -> subject.addFirst(null));
+    }
 
-	@Test
-	public void addFirst_OK() {
-		String expected = "A";
+    @Test
+    public void addFirst_OK() {
+        String expected = "A";
 
-		subject.addFirst(expected);
+        subject.addFirst(expected);
 
-		String value = fieldExtractor.getFirstItem(subject);
+        String value = fieldExtractor.getFirstItem(subject);
 
-		assertEquals(expected, value);
-	}
+        assertEquals(expected, value);
+    }
 
-	@Test
-	public void addFirst_MultipleCalls_OK() {
-		String lastAddedString = "B";
+    @Test
+    public void addFirst_MultipleCalls_OK() {
+        String lastAddedString = "B";
 
-		subject.addFirst("A");
+        subject.addFirst("A");
 
-		subject.addFirst("B");
+        subject.addFirst("B");
 
-		subject.addFirst(lastAddedString);
+        subject.addFirst(lastAddedString);
 
-		String value = fieldExtractor.getFirstItem(subject);
+        String value = fieldExtractor.getFirstItem(subject);
 
-		assertEquals(lastAddedString, value);
+        assertEquals(lastAddedString, value);
 
-	}
+    }
 
-	@Test
-	public void addLast_Null_ThrowsIAE() {
-		assertThrows(IllegalArgumentException.class, () -> subject.addLast(null));
-	}
+    @Test
+    public void addLast_Null_ThrowsIAE() {
+        assertThrows(IllegalArgumentException.class, () -> subject.addLast(null));
+    }
 
-	@Test
-	public void addLast_OK() {
-		String expected = "A";
+    @Test
+    public void addLast_OK() {
+        String expected = "A";
 
-		subject.addLast(expected);
+        subject.addLast(expected);
 
-		String value = fieldExtractor.getLastItem(subject);
+        String value = fieldExtractor.getLastItem(subject);
 
-		assertEquals(expected, value);
-	}
+        assertEquals(expected, value);
+    }
 
-	@Test
-	public void addLast_MultipleCalls_OK() {
-		String lastAddedString = "B";
+    @Test
+    public void addLast_MultipleCalls_OK() {
+        String lastAddedString = "B";
 
-		subject.addLast("A");
+        subject.addLast("A");
 
-		subject.addLast("B");
+        subject.addLast("B");
 
-		subject.addLast(lastAddedString);
+        subject.addLast(lastAddedString);
 
-		String value = fieldExtractor.getLastItem(subject);
+        String value = fieldExtractor.getLastItem(subject);
 
-		assertEquals(lastAddedString, value);
+        assertEquals(lastAddedString, value);
 
-	}
+    }
 
-	@Test
-	public void addFirstAddLast_MultipleCallsMixed_OK() {
-		String firstAddedString = "A";
+    @Test
+    public void addFirstAddLast_MultipleCallsMixed_OK() {
+        String firstAddedString = "A";
 
-		String lastAddedString = "B";
+        String lastAddedString = "B";
 
-		subject.addFirst("0");
+        subject.addFirst("0");
 
-		subject.addLast("C");
+        subject.addLast("C");
 
-		subject.addFirst(firstAddedString);
+        subject.addFirst(firstAddedString);
 
-		subject.addLast(lastAddedString);
+        subject.addLast(lastAddedString);
 
-		String firstString = fieldExtractor.getFirstItem(subject);
+        String firstString = fieldExtractor.getFirstItem(subject);
 
-		String lastString = fieldExtractor.getLastItem(subject);
+        String lastString = fieldExtractor.getLastItem(subject);
 
-		assertEquals(firstAddedString, firstString);
+        assertEquals(firstAddedString, firstString);
 
-		assertEquals(lastAddedString, lastString);
-	}
+        assertEquals(lastAddedString, lastString);
+    }
 
-	@Test
-	public void removeFirst_EmptyDeque_ThrowsNSEE() {
-		assertThrows(NoSuchElementException.class, () -> subject.removeFirst());
-	}
+    @Test
+    public void addFirstRemoveFirst_OK() {
+        String input = "2";
 
-	@Test
-	public void removeFirst_NotEmptyDeque_OK() {
-		subject.addFirst("A");
+        subject.addFirst(input);
 
-		subject.addLast("B");
+        String removedItem = subject.removeFirst();
 
-		subject.addFirst("C");
+        assertEquals(input, removedItem);
+    }
 
-		String removedElement = subject.removeFirst();
+    @Test
+    public void addFirstRemoveFirstIsEmpty_OK() {
+        subject.addFirst("2");
 
-		assertEquals("C", removedElement);
+        subject.removeFirst();
 
-		String firstItem = fieldExtractor.getFirstItem(subject);
+        assertTrue(subject.isEmpty());
 
-		assertEquals("A", firstItem);
+        subject.addFirst("3");
 
-		String lastItem = fieldExtractor.getLastItem(subject);
+        subject.removeFirst();
 
-		assertEquals("B", lastItem);
-	}
+        assertTrue(subject.isEmpty());
+    }
 
-	@Test
-	public void removeLast_EmptyDeque_ThrowsNSEE() {
-		assertThrows(NoSuchElementException.class, () -> subject.removeLast());
-	}
+    @Test
+    public void addFirstRemoveLast_OK() {
+        String input = "2";
 
-	@Test
-	public void removeLast_NotEmptyDeque_OK() {
-		subject.addLast("A");
+        subject.addFirst(input);
 
-		subject.addLast("B");
+        String removedItem = subject.removeLast();
 
-		subject.addFirst("C");
+        assertEquals(input, removedItem);
+    }
 
-		String removedElement = subject.removeLast();
+    @Test
+    public void removeFirst_EmptyDeque_ThrowsNSEE() {
+        assertThrows(NoSuchElementException.class, () -> subject.removeFirst());
+    }
 
-		assertEquals("B", removedElement);
+    @Test
+    public void removeFirst_NotEmptyDeque_OK() {
+        subject.addFirst("A");
 
-		String firstItem = fieldExtractor.getFirstItem(subject);
+        subject.addLast("B");
 
-		assertEquals("C", firstItem);
+        subject.addFirst("C");
 
-		String lastItem = fieldExtractor.getLastItem(subject);
+        String removedElement = subject.removeFirst();
 
-		assertEquals("A", lastItem);
-	}
+        assertEquals("C", removedElement);
 
-	@Test
-	public void iterator_emptyDeque_hasNext_False() {
-		boolean hasNext = subject.iterator().hasNext();
+        String firstItem = fieldExtractor.getFirstItem(subject);
 
-		assertFalse(hasNext);
-	}
+        assertEquals("A", firstItem);
 
-	@Test
-	public void iterator_hasNext_notEmptyDeque_True() {
-		subject.addFirst("A");
+        String lastItem = fieldExtractor.getLastItem(subject);
 
-		boolean hasNext = subject.iterator().hasNext();
+        assertEquals("B", lastItem);
+    }
 
-		assertTrue(hasNext);
-	}
+    @Test
+    public void removeLast_EmptyDeque_ThrowsNSEE() {
+        assertThrows(NoSuchElementException.class, () -> subject.removeLast());
+    }
 
-	@Test
-	public void iterator_next_emptyDeque_null() {
-		Object next = subject.iterator().next();
+    @Test
+    public void removeLast_NotEmptyDeque_OK() {
+        subject.addLast("A");
 
-		assertNull(next);
-	}
+        subject.addLast("B");
 
-	@Test
-	public void iterator_next_notEmptyDeque_OK() {
-		subject.addFirst("A");
+        subject.addFirst("C");
 
-		subject.addFirst("B");
+        String removedElement = subject.removeLast();
 
-		subject.addFirst("C");
+        assertEquals("B", removedElement);
 
-		StringBuilder stringBuilder = new StringBuilder();
+        String firstItem = fieldExtractor.getFirstItem(subject);
 
-		Iterator<String> iterator = subject.iterator();
+        assertEquals("C", firstItem);
 
-		while (iterator.hasNext()) {
-			String next = (String) iterator.next();
+        String lastItem = fieldExtractor.getLastItem(subject);
 
-			stringBuilder.append(next);
-		}
+        assertEquals("A", lastItem);
+    }
 
-		assertEquals("CBA", stringBuilder.toString());
+    @Test
+    public void iterator_emptyDeque_hasNext_False() {
+        boolean hasNext = subject.iterator().hasNext();
 
-	}
+        assertFalse(hasNext);
+    }
 
-	@Test
-	public void iterator_remove_UOE() {
-		assertThrows(UnsupportedOperationException.class, () -> subject.iterator().remove());
-	}
-	
-	@Test
-	public void main_OK() {
-		assertDoesNotThrow(()-> Deque.main(null));
-	}
+    @Test
+    public void iterator_hasNext_notEmptyDeque_True() {
+        subject.addFirst("A");
+
+        boolean hasNext = subject.iterator().hasNext();
+
+        assertTrue(hasNext);
+    }
+
+    @Test
+    public void iterator_next_notEmptyDeque_OK() {
+        subject.addFirst("A");
+
+        subject.addFirst("B");
+
+        subject.addFirst("C");
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        Iterator<String> iterator = subject.iterator();
+
+        while (iterator.hasNext()) {
+            String next = (String) iterator.next();
+
+            stringBuilder.append(next);
+        }
+
+        assertEquals("CBA", stringBuilder.toString());
+
+    }
+
+    @Test
+    public void iterator_remove_UOE() {
+        assertThrows(UnsupportedOperationException.class, () -> subject.iterator().remove());
+    }
+
+    @Test
+    public void iterator_next_whenEmpty_UOE() {
+        Iterator<String> iterator = subject.iterator();
+
+        assertThrows(NoSuchElementException.class, () -> iterator.next());
+    }
+
+    @Test
+    public void main_OK() {
+        assertDoesNotThrow(() -> Deque.main(null));
+    }
 
 }

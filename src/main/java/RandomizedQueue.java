@@ -3,206 +3,201 @@ import java.util.NoSuchElementException;
 import edu.princeton.cs.algs4.StdRandom;
 
 public class RandomizedQueue<Item> implements Iterable<Item> {
-	private Item[] items;
+    private Item[] items;
 
-	private int itemsCount = 0;
+    private int itemsCount = 0;
 
-	public RandomizedQueue() {
-		items = createArray(10);
-	}
+    public RandomizedQueue() {
+        items = createArray(10);
+    }
 
-	public RandomizedQueue(int capacity) {
-		items = createArray(capacity);
-	}
+    private class RandomizedQueueIterator implements Iterator<Item> {
+        private Item[] iteratorItems = createArray(itemsCount);
 
-	private class RandomizedQueueIterator implements Iterator<Item> {
-		private Item[] iteratorItems = createArray(itemsCount);
+        private int iteratorLastIndex = 0;
 
-		private int iteratorLastIndex = 0;
+        private RandomizedQueueIterator() {
+            for (int i = 0; i < itemsCount; i++) {
+                Item item = items[i];
 
-		private RandomizedQueueIterator() {
-			for (int i = 0; i < itemsCount; i++) {
-				Item item = items[i];
+                if (item != null) {
+                    iteratorItems[i] = item;
+                }
+            }
 
-				if (item != null) {
-					iteratorItems[i] = item;
-				}
-			}
+            iteratorLastIndex = iteratorItems.length - 1;
 
-			iteratorLastIndex = iteratorItems.length - 1;
+        }
 
-		}
+        @Override
+        public boolean hasNext() {
+            return iteratorLastIndex >= 0;
+        }
 
-		@Override
-		public boolean hasNext() {
-			return iteratorLastIndex >= 0;
-		}
+        @Override
+        public Item next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException("No more items in queue");
+            }
+            Item nextItem = null;
 
-		@Override
-		public Item next() {
-			if (!this.hasNext()) {
-				throw new NoSuchElementException("No more items in queue");
-			}
-			Item nextItem = null;
+            int nextItemIndex = 0;
 
-			int nextItemIndex = 0;
+            if (iteratorLastIndex != 0) {
+                nextItemIndex = getRandomIndex(iteratorLastIndex + 1);
 
-			if (iteratorLastIndex != 0) {
-				nextItemIndex = getRandomIndex(iteratorLastIndex + 1);
-				
-				nextItem = iteratorItems[nextItemIndex];
+                nextItem = iteratorItems[nextItemIndex];
 
-				iteratorItems[nextItemIndex] = iteratorItems[iteratorLastIndex];
+                iteratorItems[nextItemIndex] = iteratorItems[iteratorLastIndex];
 
-				iteratorItems[iteratorLastIndex] = null;
+                iteratorItems[iteratorLastIndex] = null;
 
-			} else {
-				nextItem = iteratorItems[0];
-			}
+            } else {
+                nextItem = iteratorItems[0];
+            }
 
-			iteratorLastIndex--;
+            iteratorLastIndex--;
 
-			return nextItem;
-		}
+            return nextItem;
+        }
 
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException("remove() is unsupported");
-		}
-	}
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException("remove() is unsupported");
+        }
+    }
 
-	public boolean isEmpty() {
-		return itemsCount == 0;
-	}
+    public boolean isEmpty() {
+        return itemsCount == 0;
+    }
 
-	public int size() {
-		return itemsCount;
-	}
+    public int size() {
+        return itemsCount;
+    }
 
-	public void enqueue(Item item) {
-		checkItemNotNull(item);
+    public void enqueue(Item item) {
+        checkItemNotNull(item);
 
-		if (itemsCount == items.length) {
-			resize(items.length * 2);
-		}
+        if (itemsCount == items.length) {
+            resize(items.length * 2);
+        }
 
-		items[itemsCount] = item;
+        items[itemsCount] = item;
 
-		itemsCount++;
-	}
+        itemsCount++;
+    }
 
-	public Item dequeue() {
-		checkItemsNotEmpty();
+    public Item dequeue() {
+        checkItemsNotEmpty();
 
-		if (itemsCount == items.length / 4) {
-			resize(items.length / 2);
-		}
+        if (itemsCount == items.length / 4) {
+            resize(items.length / 2);
+        }
 
-		int randomIndex = getRandomIndex(itemsCount);
+        int randomIndex = getRandomIndex(itemsCount);
 
-		Item randomItem = items[randomIndex];
+        Item randomItem = items[randomIndex];
 
-		items[randomIndex] = items[itemsCount - 1];
-		
-		items[itemsCount - 1] = null;
+        items[randomIndex] = items[itemsCount - 1];
 
-		itemsCount--;
+        items[itemsCount - 1] = null;
 
-		return randomItem;
-	}
+        itemsCount--;
 
-	public Item sample() {
-		checkItemsNotEmpty();
+        return randomItem;
+    }
 
-		int randomIndex = getRandomIndex(itemsCount);
+    public Item sample() {
+        checkItemsNotEmpty();
 
-		return items[randomIndex];
-	}
+        int randomIndex = getRandomIndex(itemsCount);
 
-	@Override
-	public Iterator<Item> iterator() {
-		return new RandomizedQueueIterator();
-	}
+        return items[randomIndex];
+    }
 
-	private void checkItemNotNull(Item item) {
-		if (item == null) {
-			throw new IllegalArgumentException("Can't add null to the queue");
-		}
-	}
+    @Override
+    public Iterator<Item> iterator() {
+        return new RandomizedQueueIterator();
+    }
 
-	@SuppressWarnings("unchecked")
-	private Item[] createArray(int size) {
-		return (Item[]) new Object[size];
-	}
+    private void checkItemNotNull(Item item) {
+        if (item == null) {
+            throw new IllegalArgumentException("Can't add null to the queue");
+        }
+    }
 
-	private void resize(int capacity) {
-		Item[] newArray = createArray(capacity);
+    private Item[] createArray(int size) {
+        return (Item[]) new Object[size];
+    }
 
-		int index = 0;
+    private void resize(int capacity) {
+        Item[] newArray = createArray(capacity);
 
-		for (Item item : items) {
-			if (item != null) {
-				newArray[index] = item;
+        int index = 0;
 
-				index++;
-			}
-		}
+        for (Item item : items) {
+            if (item != null) {
+                newArray[index] = item;
 
-		items = newArray;
-	}
+                index++;
+            }
+        }
 
-	private int getRandomIndex(int topLimit) {
-		return StdRandom.uniformInt(topLimit);
-	}
+        items = newArray;
+    }
 
-	private void checkItemsNotEmpty() {
-		if (itemsCount == 0) {
-			throw new NoSuchElementException("Queue is empty");
-		}
-	}
+    private int getRandomIndex(int topLimit) {
+        return StdRandom.uniformInt(topLimit);
+    }
 
-	public static void main(String[] args) {
-		RandomizedQueue<Integer> randomizedQueue = new RandomizedQueue<>();
+    private void checkItemsNotEmpty() {
+        if (itemsCount == 0) {
+            throw new NoSuchElementException("Queue is empty");
+        }
+    }
 
-		System.out.println("Created RandomizedQueue instance using no args constructor");
+    public static void main(String[] args) {
+        RandomizedQueue<Integer> randomizedQueue = new RandomizedQueue<>();
 
-		randomizedQueue.enqueue(1);
+        System.out.println("Created RandomizedQueue instance using no args constructor");
 
-		randomizedQueue.enqueue(2);
+        randomizedQueue.enqueue(1);
 
-		System.out.println("Added 2 items");
+        randomizedQueue.enqueue(2);
 
-		Integer item = randomizedQueue.sample();
+        System.out.println("Added 2 items");
 
-		System.out.println("Sampled item : " + item);
+        Integer item = randomizedQueue.sample();
 
-		Integer dequeuedItem = randomizedQueue.dequeue();
+        System.out.println("Sampled item : " + item);
 
-		System.out.println("Dequeued item : " + dequeuedItem);
+        Integer dequeuedItem = randomizedQueue.dequeue();
 
-		randomizedQueue = new RandomizedQueue<>(10);
+        System.out.println("Dequeued item : " + dequeuedItem);
 
-		System.out.println("Created RandomizedQueue instance using constructor with capacity argument");
+        randomizedQueue = new RandomizedQueue<>();
 
-		for (int i = 1; i <= 10; i++) {
-			randomizedQueue.enqueue(i);
+        System.out.println("Created RandomizedQueue instance using constructor with capacity argument");
 
-			System.out.println("Equeued " + i);
-		}
+        for (int i = 1; i <= 10; i++) {
+            randomizedQueue.enqueue(i);
 
-		System.out.println("isEmpty = " + randomizedQueue.isEmpty());
+            System.out.println("Equeued " + i);
+        }
 
-		System.out.println("size = " + randomizedQueue.size());
+        System.out.println("isEmpty = " + randomizedQueue.isEmpty());
 
-		Iterator<Integer> iterator = randomizedQueue.iterator();
+        System.out.println("size = " + randomizedQueue.size());
 
-		System.out.println("Launching iterator");
+        Iterator<Integer> iterator = randomizedQueue.iterator();
 
-		while (iterator.hasNext()) {
-			Integer next = iterator.next();
+        System.out.println("Launching iterator");
 
-			System.out.println("Next item : " + next);
-		}
-	}
+        while (iterator.hasNext()) {
+            Integer next = iterator.next();
+
+            System.out.println("Next item : " + next);
+        }
+    }
 
 }
