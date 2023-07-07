@@ -1,49 +1,57 @@
+import java.util.Iterator;
+
 import edu.princeton.cs.algs4.StdIn;
 import edu.princeton.cs.algs4.StdRandom;
 
-import static edu.princeton.cs.algs4.StdOut.println;
-
-import java.util.Iterator;
-
 public class Permutation {
+    public static void main(String[] args) {
+        String cmdArg = args[0];
 
-	public static void main(String[] args) {
-		String cmdArg = args[0];
+        if (cmdArg == null) {
+            throw new IllegalArgumentException("'k' arg can't be 'null'");
+        }
 
-		if (cmdArg == null) {
-			throw new IllegalArgumentException("'k' arg can't be 'null'");
-		}
+        int k = Integer.parseInt(cmdArg);
 
-		int k = Integer.parseInt(cmdArg);
+        if (k < 0) {
+            throw new IllegalArgumentException("'k' can't be < 0");
+        }
 
-		if (k <= 0) {
-			throw new IllegalArgumentException("'k' can't be <= 0");
-		}
+        if (k == 0) {
+            return;
+        }
 
-		println("Enter values");
+        RandomizedQueue<String> queue = new RandomizedQueue<>();
 
-		RandomizedQueue<String> queue = new RandomizedQueue<>();
-		
-		while(!StdIn.isEmpty()) {
-			String userInput = StdIn.readString();
-			
-			queue.enqueue(userInput);
-		}
+        int n = 0;
 
-		Iterator<String> iterator = queue.iterator();
+        while (!StdIn.isEmpty()) {
+            String input = StdIn.readString();
 
-		int poppedItemsCount = 0;
+            n++;
 
-		while (iterator.hasNext() && poppedItemsCount < k) {
-			String nextRandomItem = iterator.next();
+            if (queue.size() < k) {
+                queue.enqueue(input);
+            } else {
+                double probability = (double) k / n;
 
-			println(nextRandomItem);
+                boolean addItem = StdRandom.bernoulli(probability);
 
-			poppedItemsCount++;
-		}
+                if (addItem) {
+                    queue.dequeue();
 
-		println("Done");
+                    queue.enqueue(input);
+                }
+            }
+        }
 
-	}
+        Iterator<String> iterator = queue.iterator();
+
+        while (iterator.hasNext()) {
+            String next = iterator.next();
+
+            System.out.println(next);
+        }
+    }
 
 }
